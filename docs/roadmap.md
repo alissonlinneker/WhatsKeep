@@ -1,48 +1,75 @@
 # Roadmap
 
-This document outlines the planned development milestones for WhatsKeep. Priorities may shift based on community feedback and contributions.
+Planned development milestones for WhatsKeep. Priorities may shift based on community feedback.
 
 ---
 
 ## v1.0.0 (Current)
 
-The initial stable release. Core functionality is complete and tested.
+The initial stable release with full cross-platform support.
 
+### Core
 - [x] Cross-platform file detection (macOS, Windows, Linux)
 - [x] Modern and legacy WhatsApp filename pattern recognition
 - [x] Chat export detection and organization
-- [x] macOS ChatStorage.sqlite database reader (read-only, WAL-safe)
-- [x] Windows and Linux database reader stubs
-- [x] Contact/group folder organization with phone numbers
-- [x] Unidentified file handling with date-based subfolders
-- [x] SHA-256/MD5/BLAKE2b deduplication
-- [x] Background daemon via launchd (macOS), Task Scheduler (Windows), systemd (Linux)
+- [x] Contacts/ and Groups/ folder structure (no duplicated phone numbers)
+
+### Database Readers (all platforms)
+- [x] macOS ChatStorage.sqlite reader (read-only, WAL-safe, retry with backoff)
+- [x] Windows database reader (standalone + UWP paths, auto-detect schema)
+- [x] Linux database reader (snap, flatpak, .config paths, auto-detect schema)
+- [x] Push name fallback for contacts not saved in address book
+- [x] Sender identification in group messages via ZWAPROFILEPUSHNAME
+- [x] Sticker detection via ZMESSAGETYPE=15
+
+### Real-time & Export
+- [x] Real-time watchdog daemon captures files in <1 second
+- [x] Full history export from WhatsApp internal storage (`whatskeep export`)
+- [x] Background daemon: launchd (macOS), Task Scheduler (Windows), systemd (Linux)
+- [x] Watch mode (`whatskeep run --watch`) for continuous monitoring
+
+### Evidence & Security
+- [x] SHA-256 chain of custody with per-file .custody.json sidecars
+- [x] Deletion detection: tags files with [DELETED] + Finder red tag on macOS
+- [x] Evidence export packages per contact (manifest + SHA256SUMS + custody log)
+- [x] Integrity verification (`whatskeep evidence verify`)
+- [x] Deduplication with double-hash verification and stability checks
+- [x] Path traversal prevention (validate_dest_within_root)
+- [x] SQLite busy_timeout + threading locks for concurrent access
+- [x] 50% safety threshold for false-positive deletion detection
+
+### CLI
 - [x] Interactive setup wizard (`whatskeep init`)
-- [x] Dry-run mode (`whatskeep run --dry-run`)
-- [x] Rich CLI with tables and colored output
+- [x] Dry-run mode for all operations
+- [x] Rich tables and colored output
+- [x] 19 commands: init, run, export, start, stop, status, stats, contacts, config (show/edit/reset), evidence (status/hash/verify/export), update, logs, doctor, version, uninstall
+- [x] Configurable media type filtering (sticker and gif disabled by default)
 - [x] Allowlist/blocklist backup modes
-- [x] Media type filtering
-- [x] Configuration via TOML (`~/.whatskeep/config.toml`)
-- [x] Auto-update via GitHub Releases API
-- [x] Diagnostics command (`whatskeep doctor`)
-- [x] Storage statistics (`whatskeep stats`)
-- [x] Contact listing (`whatskeep contacts`)
-- [x] Log viewer (`whatskeep logs`)
+- [x] Auto-update via GitHub Releases API (configurable, --check and --force flags)
+
+### Documentation & CI
+- [x] Comprehensive README with all features documented
+- [x] WhatsApp Desktop setup guides (macOS, Windows, Linux)
+- [x] Configuration reference, troubleshooting guide
+- [x] Digital evidence research (Brazilian law, STJ jurisprudence)
+- [x] GitHub Actions CI (matrix: 3 OS x 4 Python versions)
+- [x] Release workflow (PyInstaller binaries + PyPI publish)
+- [x] Security audit: Shield score 100/100
 
 ---
 
 ## v1.1.0
 
-Focus: **Windows database support and improved reliability**.
+Focus: **Reliability, evidence strength, and test coverage**.
 
-- [ ] Full Windows ChatStorage.sqlite reader implementation
-- [ ] Linux database reader for common installation paths (snap, flatpak)
-- [ ] Retry logic for cross-platform database access (locked/busy handling)
-- [ ] File watcher integration with daemon mode (`whatskeep run --watch`)
-- [ ] Configurable timestamp matching tolerance
-- [ ] Notification system (native desktop notifications)
-- [ ] Progress bar for large batch operations
-- [ ] `whatskeep export` command to generate a CSV/JSON report of organized media
+- [ ] OpenTimestamps integration (blockchain timestamp anchoring — evidence Layer 2)
+- [ ] Resolve DB lookup in launchd daemon context (macOS permissions investigation)
+- [ ] Re-correlate _Unidentified files with contacts on subsequent runs
+- [ ] Configurable timestamp matching tolerance (currently fixed at +/-3 seconds)
+- [ ] Native desktop notifications (macOS/Windows/Linux)
+- [ ] Progress bar for large batch operations (export, hash, verify)
+- [ ] Expanded test coverage (target >80%, ~65 new tests for tracker, evidence, watcher)
+- [ ] Homebrew formula, winget manifest, snap package
 
 ---
 
@@ -50,14 +77,14 @@ Focus: **Windows database support and improved reliability**.
 
 Focus: **Smart organization and user experience**.
 
-- [ ] Fuzzy timestamp matching for improved contact identification rates
+- [ ] Fuzzy timestamp matching for improved contact identification
 - [ ] Reverse-lookup: match files by content hash against database media hashes
-- [ ] Customizable folder templates with more placeholders (`{date}`, `{year}`, `{month}`)
-- [ ] Thumbnail generation for image and video files
+- [ ] Customizable folder templates (`{date}`, `{year}`, `{month}`)
 - [ ] `whatskeep search` command to find files by contact, date, or type
-- [ ] Interactive TUI mode using Textual or similar framework
+- [ ] Interactive TUI mode (Textual)
 - [ ] Shell completions (bash, zsh, fish, PowerShell)
 - [ ] Localization support (Portuguese, Spanish)
+- [ ] Thumbnail generation for image and video files
 
 ---
 
@@ -65,12 +92,11 @@ Focus: **Smart organization and user experience**.
 
 Focus: **Advanced backup features**.
 
-- [ ] Incremental backup with change tracking (avoid re-scanning unchanged files)
+- [ ] Incremental backup with change tracking
 - [ ] Scheduled full scans (weekly/monthly digest)
 - [ ] Backup to external drives with automatic detection
 - [ ] Compression option for archived media (zip/tar.gz per contact)
 - [ ] Retention policies (auto-delete old backups after N days)
-- [ ] Conflict resolution UI for ambiguous file matches
 - [ ] Plugin system for custom organization rules
 
 ---
@@ -80,23 +106,17 @@ Focus: **Advanced backup features**.
 Focus: **Multi-device and ecosystem expansion**.
 
 - [ ] WhatsApp Business app support
-- [ ] Telegram media organization (via Telegram Desktop database)
+- [ ] Telegram media organization
 - [ ] Signal media organization
 - [ ] Web-based dashboard for browsing organized media
-- [ ] iCloud/Google Drive/OneDrive sync integration
-- [ ] Mobile companion app (view organized media on phone)
-- [ ] Multi-account support (multiple WhatsApp profiles)
+- [ ] Cloud sync (iCloud, Google Drive, OneDrive)
+- [ ] Mobile companion app
+- [ ] Multi-account support
 - [ ] End-to-end encrypted backup archives
 - [ ] REST API for integration with other tools
 
 ---
 
-## Contributing to the Roadmap
+## Contributing
 
-Feature requests and suggestions are welcome. If you would like to work on any of the items above:
-
-1. Check the [issues page](https://github.com/alissonlinneker/whatskeep/issues) for existing discussions
-2. Open a new issue describing the feature and your proposed approach
-3. Reference the roadmap version in your pull request
-
-Priorities are influenced by community demand. If a feature matters to you, upvote or comment on its issue.
+Feature requests welcome. Check the [issues page](https://github.com/alissonlinneker/whatskeep/issues) for existing discussions or open a new issue.

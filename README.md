@@ -592,16 +592,15 @@ Your media stays on your machine. Always.
 
 ### v1.1.0 (Planned)
 
-Focus: **Windows database support and improved reliability**.
+Focus: **Evidence strength and reliability improvements**.
 
-- Full Windows database reader implementation
-- Linux database reader for common paths (snap, flatpak)
-- Retry logic for database access (locked/busy handling)
+- OpenTimestamps integration (blockchain timestamp anchoring — evidence Layer 2)
 - Configurable timestamp matching tolerance
 - Native desktop notification system
 - Progress bar for large batch operations
-- OpenTimestamps integration (evidence Layer 2)
-- Expanded test coverage
+- Re-correlate unidentified files on subsequent runs
+- Expanded test coverage (target >80%)
+- Homebrew formula, winget manifest, snap package
 
 ### v1.2.0 (Planned)
 

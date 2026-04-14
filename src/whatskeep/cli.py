@@ -741,10 +741,13 @@ def update(
     check: bool = typer.Option(
         False, "--check", help="Only check for updates, don't install.",
     ),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="Force re-check ignoring cache interval.",
+    ),
 ) -> None:
     """Check for updates and optionally auto-update."""
     try:
-        from whatskeep.updater import check_for_update, perform_update
+        from whatskeep.updater import check_for_update, perform_update, record_check
     except ImportError as exc:
         console.print(
             "[yellow]Auto-update module is not yet available.[/yellow]",
@@ -756,7 +759,12 @@ def update(
         )
         raise typer.Exit(0) from exc
 
+    if force:
+        console.print("[dim]Forcing update check...[/dim]")
+
     info = check_for_update()
+    record_check()
+
     if not info.is_newer:
         console.print(
             f"[green]You are on the latest version ({__version__}).[/green]",

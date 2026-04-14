@@ -27,7 +27,7 @@ jobs:
       - name: Build binary
         run: pyinstaller --onefile --name whatskeep-${{ matrix.target }} src/whatskeep/__main__.py
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: whatskeep-${{ matrix.target }}
           path: dist/whatskeep-*

@@ -25,3 +25,30 @@ def get_db_reader() -> BaseDBReader | None:
 
         return LinuxDBReader()
     return None
+
+
+def get_all_db_readers() -> list[BaseDBReader]:
+    """Return readers for ALL available WhatsApp accounts on this machine."""
+    system = platform.system()
+    readers: list[BaseDBReader] = []
+
+    if system == "Darwin":
+        from whatskeep.db.macos import MacOSDBReader
+
+        for reader in MacOSDBReader.discover_all():
+            if reader.is_available():
+                readers.append(reader)
+    elif system == "Windows":
+        from whatskeep.db.windows import WindowsDBReader
+
+        win_reader: BaseDBReader = WindowsDBReader()
+        if win_reader.is_available():
+            readers.append(win_reader)
+    elif system == "Linux":
+        from whatskeep.db.linux import LinuxDBReader
+
+        linux_reader: BaseDBReader = LinuxDBReader()
+        if linux_reader.is_available():
+            readers.append(linux_reader)
+
+    return readers

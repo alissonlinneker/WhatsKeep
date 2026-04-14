@@ -72,6 +72,7 @@ class Organizer:
         self.backup_dir = resolve_backup_dir(self.config)
         self._db_reader: BaseDBReader | None = None
         self._tracker: Tracker | None = None
+        self._account_folder: str = ""  # e.g. "WhatsApp (+55 38 9239-5665)"
         self._lookup: dict[
             tuple[int, str],
             tuple[str, str | None, bool, str | None, str | None, str | None],
@@ -254,7 +255,7 @@ class Organizer:
                     group_suffix="",
                 )
                 type_folder = media_group.capitalize()
-                dest_dir = self.backup_dir / category / folder / type_folder
+                dest_dir = self._account_root / category / folder / type_folder
 
                 # Filename: use original UUID name but prefix sender for groups
                 filename = src.name
@@ -333,9 +334,18 @@ class Organizer:
         self._db_reader = get_db_reader()
         if self._db_reader and self._db_reader.is_available():
             self._lookup = self._db_reader.build_lookup()
-            logger.info(f"DB lookup loaded: {len(self._lookup)} entries")
+            # Detect account for folder structure
+            name, phone = self._db_reader.account_info()
+            from whatskeep.utils.fs import sanitize_dirname
+
+            self._account_folder = sanitize_dirname(f"{name} ({phone})")
+            logger.info(
+                f"DB lookup loaded: {len(self._lookup)} entries "
+                f"(account: {name} {phone})"
+            )
         else:
             self._lookup = {}
+            self._account_folder = ""
             logger.warning("WhatsApp DB not available — organizing by type/date only")
 
     def _scan_downloads(self) -> list[MediaFile]:
@@ -543,9 +553,17 @@ class Organizer:
 
         return True
 
+    @property
+    def _account_root(self) -> Path:
+        """Return the account-specific root: backup_dir/AccountName (phone)/"""
+        if self._account_folder:
+            return self.backup_dir / self._account_folder
+        return self.backup_dir
+
     def _build_dest_path(self, media_file: MediaFile, org_config: dict) -> Path:
         """Build the destination file path for a regular media file."""
         filename = media_file.path.name
+        root = self._account_root
 
         if media_file.contact:
             # Has contact — use Contacts/ or Groups/ prefix
@@ -556,7 +574,7 @@ class Organizer:
                 group_suffix="",  # No suffix needed — Groups/ prefix is enough
             )
             type_folder = media_file.media_type.value.capitalize()
-            dest_dir = self.backup_dir / category / folder / type_folder
+            dest_dir = root / category / folder / type_folder
 
             # For group messages, prefix filename with sender name + phone
             if contact.is_group and contact.sender_name:
@@ -573,9 +591,9 @@ class Organizer:
             type_folder = media_file.media_type.value.capitalize()
             if org_config.get("unidentified_by_date", True):
                 date_folder = media_file.timestamp.strftime("%Y-%m")
-                dest_dir = self.backup_dir / unid_folder / type_folder / date_folder
+                dest_dir = root / unid_folder / type_folder / date_folder
             else:
-                dest_dir = self.backup_dir / unid_folder / type_folder
+                dest_dir = root / unid_folder / type_folder
 
         return dest_dir / filename
 
@@ -591,5 +609,5 @@ class Organizer:
         """
         exports_folder: str = org_config.get("chat_exports_folder", "_Chat Exports")
         subfolder = contact_name or "_Unknown"
-        dest_dir = self.backup_dir / exports_folder / subfolder
+        dest_dir = self._account_root / exports_folder / subfolder
         return dest_dir / media_file.path.name

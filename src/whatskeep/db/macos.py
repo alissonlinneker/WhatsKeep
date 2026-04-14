@@ -22,6 +22,12 @@ _DB_RELATIVE = (
     "/ChatStorage.sqlite"
 )
 
+# All known WhatsApp container names on macOS
+_CONTAINERS = [
+    "group.net.whatsapp.WhatsApp.shared",      # Personal
+    "group.net.whatsapp.WhatsAppSMB.shared",    # Business
+]
+
 _SQL_MEDIA = """\
 SELECT
     m.ZMESSAGEDATE,
@@ -81,20 +87,95 @@ def _media_type_from_path(local_path: str) -> MediaType | None:
 class MacOSDBReader(BaseDBReader):
     """Read-only access to the macOS WhatsApp ChatStorage.sqlite database."""
 
-    def __init__(self) -> None:
+    def __init__(self, container: str | None = None) -> None:
         self._conn: sqlite3.Connection | None = None
+        self._container = container  # e.g. "group.net.whatsapp.WhatsApp.shared"
+        self._account_name: str | None = None
+        self._account_phone: str | None = None
+
+    @classmethod
+    def discover_all(cls) -> list[MacOSDBReader]:
+        """Return a reader for each WhatsApp account found on this Mac."""
+        readers: list[MacOSDBReader] = []
+        for container in _CONTAINERS:
+            db = Path.home() / "Library/Group Containers" / container / "ChatStorage.sqlite"
+            if db.exists() and db.is_file():
+                readers.append(cls(container=container))
+        return readers
 
     # ------------------------------------------------------------------
     # BaseDBReader interface
     # ------------------------------------------------------------------
 
     def db_path(self) -> Path | None:
-        path = Path.home() / _DB_RELATIVE
+        if self._container:
+            path = Path.home() / "Library/Group Containers" / self._container / "ChatStorage.sqlite"
+        else:
+            path = Path.home() / _DB_RELATIVE
         return path if path.exists() else None
 
     def is_available(self) -> bool:
         p = self.db_path()
         return p is not None and p.is_file()
+
+    def account_info(self) -> tuple[str, str]:
+        """Return (account_name, formatted_phone) for this WhatsApp account.
+
+        Reads the owner phone from the container preferences and resolves
+        the display name from the push name table.
+        """
+        if self._account_name and self._account_phone:
+            return self._account_name, self._account_phone
+
+        import re
+
+        container = self._container or "group.net.whatsapp.WhatsApp.shared"
+        plist = (
+            Path.home()
+            / "Library/Group Containers"
+            / container
+            / "Library/Preferences"
+            / f"{container}.plist"
+        )
+
+        phone_raw = None
+        if plist.exists():
+            raw = plist.read_bytes()
+            idx = raw.find(b"OwnPhoneNumber")
+            if idx >= 0:
+                nearby = raw[idx : idx + 200]
+                # Extract phone from "XXXXX@s.whatsapp.net" pattern (most reliable)
+                jid_match = re.search(rb"(\d{10,15})@s\.whatsapp\.net", nearby)
+                if jid_match:
+                    phone_raw = jid_match.group(1).decode()
+
+        if phone_raw:
+            from whatskeep.utils.phone import format_phone
+
+            self._account_phone = format_phone(f"{phone_raw}@s.whatsapp.net") or f"+{phone_raw}"
+
+            # Try to get display name from push name table
+            db_path = self.db_path()
+            if db_path:
+                try:
+                    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+                    row = conn.execute(
+                        "SELECT ZPUSHNAME FROM ZWAPROFILEPUSHNAME WHERE ZJID = ?",
+                        (f"{phone_raw}@s.whatsapp.net",),
+                    ).fetchone()
+                    conn.close()
+                    if row and row[0]:
+                        self._account_name = row[0]
+                except sqlite3.Error:
+                    pass
+
+        if not self._account_name:
+            self._account_name = "WhatsApp Business" if "SMB" in container else "WhatsApp"
+
+        if not self._account_phone:
+            self._account_phone = "Unknown"
+
+        return self._account_name, self._account_phone
 
     def get_media_records(self) -> list[DBMediaRecord]:
         path = self.db_path()

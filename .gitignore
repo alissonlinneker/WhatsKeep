@@ -58,6 +58,7 @@ whatskeep.err
 
 # Marketing / internal
 docs/instagram-story.html
+docs/story-*.png
 
 # uv
 uv.lock

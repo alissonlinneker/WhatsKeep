@@ -22,6 +22,14 @@ class BaseDBReader(ABC):
     def is_available(self) -> bool:
         """Return ``True`` when the database exists and is readable."""
 
+    def account_info(self) -> tuple[str, str]:
+        """Return ``(account_name, formatted_phone)`` for this account.
+
+        Subclasses should override with platform-specific detection.
+        Default returns a generic label.
+        """
+        return "WhatsApp", "Unknown"
+
     @abstractmethod
     def get_media_records(self) -> list[DBMediaRecord]:
         """Return every media record found in the database.

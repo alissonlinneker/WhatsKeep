@@ -179,10 +179,14 @@ class TestResolveDownloadDir:
             assert result == Path.home() / "Downloads"
 
     def test_auto_returns_downloads_on_linux_no_xdg(self) -> None:
+        import os
+
         config = {"general": {"download_dir": "auto"}}
+        # Keep HOME/USERPROFILE so Path.home() works on all platforms
+        clean_env = {k: v for k, v in os.environ.items() if k != "XDG_DOWNLOAD_DIR"}
         with (
             patch("whatskeep.config.platform.system", return_value="Linux"),
-            patch.dict("os.environ", {}, clear=True),
+            patch.dict("os.environ", clean_env, clear=True),
         ):
             result = resolve_download_dir(config)
         assert result == Path.home() / "Downloads"

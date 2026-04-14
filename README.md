@@ -397,6 +397,7 @@ Done. WhatsKeep now automatically organizes every new WhatsApp media file as soo
 |---------|-------------|
 | `whatskeep update` | Check for and install updates |
 | `whatskeep update --check` | Only check whether updates are available |
+| `whatskeep update --force` | Force re-check ignoring cache interval |
 | `whatskeep logs` | Show recent log entries |
 | `whatskeep logs --tail` | Follow the log in real time |
 | `whatskeep doctor` | Diagnose common configuration issues |
@@ -560,7 +561,7 @@ WhatsKeep reads the local WhatsApp Desktop database (SQLite, read-only, with WAL
 | Platform | Database location |
 |----------|-------------------|
 | macOS | `~/Library/Group Containers/group.net.whatsapp.WhatsApp.shared/ChatStorage.sqlite` |
-| Windows | `%LocalAppData%\Packages\5319275A.WhatsAppDesktop_cv1g1gvanyjgm\LocalState\shared\ChatStorage.sqlite` |
+| Windows | `%AppData%\WhatsApp\databases\` or `%LocalAppData%\Packages\5319275A.WhatsAppDesktop_*\LocalCache\` (auto-detected) |
 | Linux | Best-effort; path varies depending on installation method |
 
 ### 3. Timestamp tolerance

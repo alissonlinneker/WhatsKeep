@@ -34,6 +34,8 @@ No contact information attached, no organization. It is impossible to know who s
 
 When someone uses "delete for everyone," the media vanishes in seconds from your device too. If you didn't capture it beforehand, it's gone.
 
+WhatsApp's "disappearing messages" feature makes this even worse. Entire conversations -- including every photo, video, and voice note shared within them -- are automatically wiped after 24 hours, 7 days, or 90 days depending on the chat setting. Because WhatsKeep captures media in real time as it arrives, all content is preserved before the auto-deletion timer expires.
+
 If you need these media files as evidence in court, simple screenshots are increasingly being rejected (Brazilian Superior Court of Justice rulings, 2024-2025). The secure alternative -- a notarial act (ata notarial) -- costs between BRL 500 and BRL 2,000+, and it only works if the content still exists at the time of certification.
 
 WhatsKeep solves this by perpetuating **all** media in an organized way (by contact and group), capturing in real time before deletion, and maintaining a chain of custody for potential legal use.

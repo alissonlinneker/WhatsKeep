@@ -220,31 +220,67 @@ Checks for updates via the GitHub Releases API. Can be configured to check autom
 
 ## Installation
 
-### Via PyPI
+### macOS
+
+Python 3.10+ is usually pre-installed. Open Terminal and run:
 
 ```bash
 pip install whatskeep
 ```
 
-### From source (with uv)
+If `pip` is not found, install Python first via [Homebrew](https://brew.sh/):
 
 ```bash
-git clone https://github.com/alissonlinneker/whatskeep.git
-cd whatskeep
-uv pip install -e .
+brew install python
+pip install whatskeep
 ```
 
-### From source (with pip)
+### Windows
+
+1. **Install Python** (if you don't have it):
+   - Download from [python.org/downloads](https://www.python.org/downloads/) (click the big yellow button)
+   - **Important**: Check the box **"Add Python to PATH"** during installation
+   - Click "Install Now"
+
+2. **Install WhatsKeep**: Open Command Prompt (search "cmd" in Start Menu) or PowerShell and run:
+
+```bash
+pip install whatskeep
+```
+
+3. **Verify**: Type `whatskeep version` and press Enter. You should see the version number.
+
+> **Tip**: If `pip` is not recognized, try `python -m pip install whatskeep` instead.
+
+### Linux
+
+```bash
+pip install whatskeep
+```
+
+On some distributions you may need `pip3` instead of `pip`, or install Python first:
+
+```bash
+# Ubuntu/Debian
+sudo apt install python3-pip
+pip3 install whatskeep
+
+# Fedora
+sudo dnf install python3-pip
+pip3 install whatskeep
+```
+
+### From source (for developers)
 
 ```bash
 git clone https://github.com/alissonlinneker/whatskeep.git
 cd whatskeep
-pip install -e .
+pip install -e .        # or: uv pip install -e .
 ```
 
 ### Standalone binary (planned)
 
-Distribution as a single binary with no Python dependency is planned for future releases.
+Distribution as a single executable (no Python required) is planned for a future release.
 
 ---
 
@@ -567,7 +603,7 @@ Your media stays on your machine. Always.
 - Modern and legacy WhatsApp filename pattern recognition
 - Chat export detection and organization
 - macOS ChatStorage.sqlite database reader (read-only, WAL-safe)
-- Database reader stubs for Windows and Linux
+- Windows and Linux database readers (auto-detect schema, best-effort)
 - Organization by contact/group with phone numbers
 - Unidentified file handling with date-based subfolders
 - SHA-256/BLAKE2b deduplication

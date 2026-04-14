@@ -19,21 +19,24 @@
 
 ## The Problem
 
-WhatsApp silently loses your media over time. Automatic cleanup, phone upgrades, storage limits, and account changes gradually erode your history of photos, videos, and audio messages. When you finally download them through WhatsApp Desktop, the files land in your Downloads folder with generic names like:
+WhatsApp loses media over time. Try to download an old photo and you get the dreaded "This media is no longer available" message -- even if you downloaded it before. Old photos, videos, and audio messages silently become unavailable. This is a chronic problem affecting millions of users.
+
+When you log into WhatsApp on a secondary device (WhatsApp Web, linked devices), your conversations only stay for roughly 90 days and gradually disappear. Worse, WhatsApp does not sync conversations from before the date you linked the device -- that history simply never shows up.
+
+Downloaded media from WhatsApp Desktop goes straight to the Downloads folder with generic names like:
 
 ```
 WhatsApp Image 2026-04-08 at 14.20.43.jpeg
 WhatsApp Audio 2026-04-10 at 09.15.22.opus
-IMG-20260401-WA0032.jpg
 ```
 
-No contact information. No organization. Just an ever-growing pile of unnamed files.
+No contact information attached, no organization. It is impossible to know who sent what.
 
-And when someone uses "delete for everyone"? The media vanishes in seconds -- from the chat and from your device. If you didn't save it beforehand, it's gone.
+When someone uses "delete for everyone," the media vanishes in seconds from your device too. If you didn't capture it beforehand, it's gone.
 
-If you need that media as evidence in legal proceedings, the situation gets worse. In Brazil, WhatsApp screenshots are increasingly being rejected by the courts. The Superior Court of Justice (STJ) has ruled against unverified WhatsApp evidence in multiple cases (HC 828.054/RN, May 2024; HC 1.036.370, September 2025). The secure alternative -- a notarized certificate (ata notarial, a sworn digital record prepared by a notary public under Brazilian law) -- costs between BRL 500 and BRL 2,000+, requires an in-person visit to a notary office, and only works if the content still exists at the time of certification. If the message has already been deleted, there is nothing to certify.
+If you need these media files as evidence in court, simple screenshots are increasingly being rejected (Brazilian Superior Court of Justice rulings, 2024-2025). The secure alternative -- a notarial act (ata notarial) -- costs between BRL 500 and BRL 2,000+, and it only works if the content still exists at the time of certification.
 
-No cross-platform tool existed that solved all of this in an integrated way.
+WhatsKeep solves this by perpetuating **all** media in an organized way (by contact and group), capturing in real time before deletion, and maintaining a chain of custody for potential legal use.
 
 ---
 

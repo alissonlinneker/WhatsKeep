@@ -56,5 +56,8 @@ whatskeep.log
 whatskeep.err
 *.custody.json
 
+# Marketing / internal
+docs/instagram-story.html
+
 # uv
 uv.lock

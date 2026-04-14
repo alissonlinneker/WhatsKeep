@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640">
+  <rect width="1280" height="640" fill="#0d1117"/>
+
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="35%" r="50%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:0.08"/>
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="sp-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="sp-grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#glow)"/>
+
+  <!-- Logo: Icon + Text (embedded from logo.svg, scaled and centered) -->
+  <g transform="translate(370, 60) scale(1.3)">
+    <!-- Shield icon -->
+    <g transform="translate(5, 10)">
+      <circle cx="60" cy="60" r="56" fill="url(#sp-grad1)" opacity="0.12"/>
+      <circle cx="60" cy="60" r="56" stroke="url(#sp-grad1)" stroke-width="2.5" fill="none"/>
+      <path d="M60 25 L85 38 L85 58 C85 75 73 88 60 95 C47 88 35 75 35 58 L35 38 Z"
+            fill="url(#sp-grad1)" opacity="0.85"/>
+      <path d="M48 58 L56 66 L72 50" stroke="white" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.95"/>
+    </g>
+    <!-- WhatsKeep text -->
+    <text x="135" y="65"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="42" font-weight="700" fill="white">Whats</text>
+    <text x="268" y="65"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="42" font-weight="700" fill="url(#sp-grad1)">Keep</text>
+    <text x="135" y="105"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+          font-size="22" font-weight="300" fill="url(#sp-grad2)">Never lose a message again</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="640" y="330" text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="300" fill="#8b949e">
+    Automatically organize and preserve your WhatsApp media by contact
+  </text>
+
+  <!-- 4 Feature badges — centered: 4x200px + 3x20px = 860px, start=(1280-860)/2=210 -->
+  <rect x="210" y="380" width="200" height="36" rx="16"
+        fill="#059669" opacity="0.15" stroke="#059669" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="310" y="403" text-anchor="middle"
+        font-family="-apple-system, sans-serif" font-size="15" fill="#34d399">
+    Real-time Capture
+  </text>
+
+  <rect x="430" y="380" width="200" height="36" rx="16"
+        fill="#059669" opacity="0.15" stroke="#059669" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="530" y="403" text-anchor="middle"
+        font-family="-apple-system, sans-serif" font-size="15" fill="#34d399">
+    Chain of Custody
+  </text>
+
+  <rect x="650" y="380" width="200" height="36" rx="16"
+        fill="#059669" opacity="0.15" stroke="#059669" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="750" y="403" text-anchor="middle"
+        font-family="-apple-system, sans-serif" font-size="15" fill="#34d399">
+    Deletion Detection
+  </text>
+
+  <rect x="870" y="380" width="200" height="36" rx="16"
+        fill="#059669" opacity="0.15" stroke="#059669" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="970" y="403" text-anchor="middle"
+        font-family="-apple-system, sans-serif" font-size="15" fill="#34d399">
+    SHA-256 Integrity
+  </text>
+
+  <!-- Subtitle: platforms -->
+  <text x="640" y="470" text-anchor="middle"
+        font-family="-apple-system, sans-serif" font-size="18" font-weight="400" fill="#484f58">
+    macOS  |  Windows  |  Linux  |  Open Source (MIT)
+  </text>
+
+  <!-- Repository URL -->
+  <text x="640" y="575" text-anchor="middle"
+        font-family="-apple-system, sans-serif" font-size="20" font-weight="400" fill="#484f58">
+    github.com/alissonlinneker/whatskeep
+  </text>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140" fill="none">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Shield + chat bubble icon -->
+  <g transform="translate(5, 10)">
+    <circle cx="60" cy="60" r="56" fill="url(#grad1)" opacity="0.12"/>
+    <circle cx="60" cy="60" r="56" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
+    <!-- Shield shape -->
+    <path d="M60 25 L85 38 L85 58 C85 75 73 88 60 95 C47 88 35 75 35 58 L35 38 Z"
+          fill="url(#grad1)" opacity="0.85"/>
+    <!-- Checkmark inside shield -->
+    <path d="M48 58 L56 66 L72 50" stroke="white" stroke-width="3.5"
+          stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.95"/>
+  </g>
+
+  <!-- Text -->
+  <text x="135" y="65"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="42" font-weight="700" fill="#1c1917">Whats</text>
+  <text x="268" y="65"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="42" font-weight="700" fill="url(#grad1)">Keep</text>
+  <text x="135" y="105"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="300" fill="url(#grad2)">Never lose a message again</text>
+</svg>

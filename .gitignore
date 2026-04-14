@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project
+*.log
+
+# Claude Code
+.memory-bank/
+.mcp.json
+.claude-logs/
+.claude/
+CLAUDE.md
+
+# Secrets
+.env
+.env.*
+
+# WhatsKeep runtime data (NEVER commit - contains personal WhatsApp data)
+tracking.db
+tracking.db-wal
+tracking.db-shm
+last_update_check.json
+watcher.log
+whatskeep.log
+whatskeep.err
+*.custody.json
+
+# uv
+uv.lock

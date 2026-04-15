@@ -920,6 +920,14 @@ def version() -> None:
     console.print(table)
 
 
+@app.command()
+def tray() -> None:
+    """Launch WhatsKeep as a system tray application (no terminal needed)."""
+    from whatskeep.tray import run_tray
+
+    run_tray()
+
+
 # ---------------------------------------------------------------------------
 # doctor
 # ---------------------------------------------------------------------------

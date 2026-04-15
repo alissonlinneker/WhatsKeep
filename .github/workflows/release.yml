@@ -28,18 +28,38 @@ jobs:
       - name: Install dependencies
         run: pip install -e ".[dev]"
 
+      - name: Set icon path
+        id: icon
+        run: |
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            echo "flag=--icon=assets/whatskeep.ico" >> $GITHUB_OUTPUT
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "flag=--icon=assets/whatskeep.icns" >> $GITHUB_OUTPUT
+          else
+            echo "flag=" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
       - name: Build standalone binary
         run: |
           pyinstaller \
             --onefile \
             --name whatskeep-${{ matrix.target }} \
+            ${{ steps.icon.outputs.flag }} \
             --collect-all whatskeep \
+            --add-data "assets:assets" \
             --hidden-import whatskeep.db.macos \
             --hidden-import whatskeep.db.windows \
             --hidden-import whatskeep.db.linux \
             --hidden-import whatskeep.platform.macos \
             --hidden-import whatskeep.platform.windows \
             --hidden-import whatskeep.platform.linux \
+            --hidden-import whatskeep.tray \
+            --hidden-import pystray \
+            --hidden-import PIL \
+            --hidden-import shellingham \
+            --hidden-import shellingham.posix \
+            --hidden-import shellingham.nt \
             src/whatskeep/__main__.py
         shell: bash
 

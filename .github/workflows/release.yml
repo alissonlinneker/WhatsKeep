@@ -13,8 +13,6 @@ jobs:
         include:
           - os: macos-14
             target: macos-arm64
-          - os: macos-13
-            target: macos-x86_64
           - os: windows-latest
             target: windows-x86_64
           - os: ubuntu-latest
@@ -117,7 +115,7 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: twine upload dist/*
+        run: twine upload dist/* --skip-existing
 
   create-release:
     name: Create GitHub Release

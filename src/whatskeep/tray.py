@@ -47,12 +47,15 @@ def _open_folder():
     backup_dir.mkdir(parents=True, exist_ok=True)
 
     system = platform.system()
-    if system == "Darwin":
-        subprocess.Popen(["open", str(backup_dir)])
-    elif system == "Windows":
-        subprocess.Popen(["explorer", str(backup_dir)])
-    else:
-        subprocess.Popen(["xdg-open", str(backup_dir)])
+    try:
+        if system == "Darwin":
+            subprocess.Popen(["open", str(backup_dir)])
+        elif system == "Windows":
+            subprocess.Popen(["explorer", str(backup_dir)])
+        else:
+            subprocess.Popen(["xdg-open", str(backup_dir)])
+    except FileNotFoundError:
+        logger.warning(f"Could not open folder: {backup_dir}")
 
 
 def _run_organize():
@@ -183,8 +186,8 @@ def _notify(title: str, message: str) -> None:
             subprocess.run(
                 ["notify-send", title, message], capture_output=True
             )
-    except Exception:
-        pass  # Notifications are best-effort
+    except Exception as exc:
+        logger.debug(f"Notification failed: {exc}")
 
 
 def run_tray() -> None:

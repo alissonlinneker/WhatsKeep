@@ -72,7 +72,7 @@ class Organizer:
         self.backup_dir = resolve_backup_dir(self.config)
         self._db_reader: BaseDBReader | None = None
         self._tracker: Tracker | None = None
-        self._account_folder: str = ""  # e.g. "WhatsApp (+55 38 9239-5665)"
+        self._account_folder: str = ""  # e.g. "WhatsApp (+1 555 123-4567)"
         self._lookup: dict[
             tuple[int, str],
             tuple[str, str | None, bool, str | None, str | None, str | None],

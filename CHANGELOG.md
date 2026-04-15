@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-04-14
+
+### Fixed
+- PyInstaller asset resolution for bundled tray icon
+- GUI log path initialization on first launch
+
+## [1.1.0] - 2026-04-14
+
+### Added
+- System tray application (`whatskeep tray`) — run WhatsKeep without a terminal window
+- GUI entry point (`gui.py`) for PyInstaller `--windowed` builds (console-free executable)
+- Multi-account support: automatic detection of all linked WhatsApp accounts on macOS
+- Account-scoped folder structure (`WhatsApp (Name +phone)/Contacts/...`)
+- Native desktop notifications on macOS (osascript), Windows (toast), and Linux (notify-send)
+- Standalone binary builds via PyInstaller in the release workflow (macOS ARM + Intel, Windows, Linux)
+- `pystray` and `Pillow` dependencies for tray icon support
+
 ## [1.0.0] - 2026-04-14
 
 ### Added
@@ -25,4 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Storage statistics
 - Comprehensive logging with rotation
 
+[1.1.1]: https://github.com/alissonlinneker/whatskeep/releases/tag/v1.1.1
+[1.1.0]: https://github.com/alissonlinneker/whatskeep/releases/tag/v1.1.0
 [1.0.0]: https://github.com/alissonlinneker/whatskeep/releases/tag/v1.0.0

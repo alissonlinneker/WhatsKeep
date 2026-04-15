@@ -227,8 +227,12 @@ class Tracker:
             new_name = f"[DELETED] {path.name}"
             new_path = path.parent / new_name
             if not new_path.exists():
-                path.rename(new_path)
-                logger.info(f"Tagged as deleted: {new_name}")
+                try:
+                    path.rename(new_path)
+                    logger.info(f"Tagged as deleted: {new_name}")
+                except OSError as exc:
+                    logger.warning(f"Could not rename {path.name}: {exc}")
+                    return
 
                 # Update tracking DB with new path
                 conn = self._get_conn()

@@ -165,9 +165,14 @@ def _update_binary(url: str) -> bool:
             resp = client.get(url)
             resp.raise_for_status()
 
-        # Verify we're not overwriting a system Python interpreter
+        import os
+
+        # Verify we're not overwriting a system binary
         exe = Path(sys.executable).resolve()
-        system_paths = ["/usr/bin", "/usr/local/bin", "/bin"]
+        system_paths = [
+            "/usr/bin", "/usr/local/bin", "/bin",  # Unix
+            "C:\\Windows", "C:\\Program Files",     # Windows
+        ]
         if any(str(exe).startswith(sp) for sp in system_paths):
             logger.error(
                 f"Refusing to overwrite system binary: {exe}. "
@@ -187,14 +192,15 @@ def _update_binary(url: str) -> bool:
             logger.error("Downloaded binary is suspiciously small — aborting.")
             return False
 
-        tmp.chmod(0o755)
+        if platform.system() != "Windows":
+            tmp.chmod(0o755)
 
-        # Atomic swap: backup old → rename new → cleanup
+        # Swap: os.replace works cross-platform (atomic on same filesystem)
         backup = exe.with_suffix(".bak")
         if exe.exists():
-            exe.rename(backup)
+            os.replace(str(exe), str(backup))
 
-        tmp.rename(exe)
+        os.replace(str(tmp), str(exe))
 
         if backup.exists():
             backup.unlink()

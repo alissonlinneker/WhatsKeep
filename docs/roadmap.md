@@ -4,11 +4,18 @@ Planned development milestones for WhatsKeep. Priorities may shift based on comm
 
 ---
 
-## v1.0.0 (Current)
+## v1.1.1 (Current)
 
-The initial stable release with full cross-platform support.
+The latest stable release with tray app, multi-account support, and standalone binaries.
 
-### Core
+### New in v1.1.x
+- [x] System tray application (`whatskeep tray`) — run without terminal
+- [x] Multi-account support (auto-detect all linked WhatsApp accounts)
+- [x] Standalone binaries via PyInstaller (macOS ARM + Intel, Windows, Linux)
+- [x] Native desktop notifications (macOS, Windows, Linux)
+- [x] GUI entry point for PyInstaller `--windowed` builds
+
+### Core (v1.0.0)
 - [x] Cross-platform file detection (macOS, Windows, Linux)
 - [x] Modern and legacy WhatsApp filename pattern recognition
 - [x] Chat export detection and organization
@@ -42,7 +49,7 @@ The initial stable release with full cross-platform support.
 - [x] Interactive setup wizard (`whatskeep init`)
 - [x] Dry-run mode for all operations
 - [x] Rich tables and colored output
-- [x] 19 commands: init, run, export, start, stop, status, stats, contacts, config (show/edit/reset), evidence (status/hash/verify/export), update, logs, doctor, version, uninstall
+- [x] 20 commands: init, run, export, start, stop, status, stats, contacts, config (show/edit/reset), evidence (status/hash/verify/export), update, logs, doctor, version, uninstall, tray
 - [x] Configurable media type filtering (sticker and gif disabled by default)
 - [x] Allowlist/blocklist backup modes
 - [x] Auto-update via GitHub Releases API (configurable, --check and --force flags)
@@ -58,22 +65,21 @@ The initial stable release with full cross-platform support.
 
 ---
 
-## v1.1.0
+## v1.2.0
 
-Focus: **Reliability, evidence strength, and test coverage**.
+Focus: **Evidence strength and reliability improvements**.
 
 - [ ] OpenTimestamps integration (blockchain timestamp anchoring — evidence Layer 2)
 - [ ] Resolve DB lookup in launchd daemon context (macOS permissions investigation)
 - [ ] Re-correlate _Unidentified files with contacts on subsequent runs
 - [ ] Configurable timestamp matching tolerance (currently fixed at +/-3 seconds)
-- [ ] Native desktop notifications (macOS/Windows/Linux)
 - [ ] Progress bar for large batch operations (export, hash, verify)
 - [ ] Expanded test coverage (target >80%, ~65 new tests for tracker, evidence, watcher)
 - [ ] Homebrew formula, winget manifest, snap package
 
 ---
 
-## v1.2.0
+## v1.3.0
 
 Focus: **Smart organization and user experience**.
 
@@ -88,7 +94,7 @@ Focus: **Smart organization and user experience**.
 
 ---
 
-## v1.3.0
+## v1.4.0
 
 Focus: **Advanced backup features**.
 
@@ -111,7 +117,6 @@ Focus: **Multi-device and ecosystem expansion**.
 - [ ] Web-based dashboard for browsing organized media
 - [ ] Cloud sync (iCloud, Google Drive, OneDrive)
 - [ ] Mobile companion app
-- [ ] Multi-account support
 - [ ] End-to-end encrypted backup archives
 - [ ] REST API for integration with other tools
 

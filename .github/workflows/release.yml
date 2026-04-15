@@ -13,7 +13,7 @@ jobs:
         include:
           - os: macos-14
             target: macos-arm64
-          - os: macos-latest
+          - os: macos-13
             target: macos-x86_64
           - os: windows-latest
             target: windows-x86_64
@@ -121,7 +121,9 @@ jobs:
       - name: Create checksums
         run: |
           cd artifacts
-          sha256sum whatskeep-* > SHA256SUMS.txt 2>/dev/null || true
+          ls -la whatskeep-* 2>/dev/null
+          sha256sum whatskeep-* > SHA256SUMS.txt
+          echo "Checksums:"
           cat SHA256SUMS.txt
 
       - name: Create GitHub Release
@@ -166,4 +168,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
           git diff --cached --quiet || git commit -m "chore: update PyPI badge to v${VERSION}"
-          git push origin HEAD:main
+          git pull --rebase origin main || true
+          git push origin HEAD:main || echo "Badge push failed (non-critical)"

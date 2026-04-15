@@ -48,37 +48,40 @@ WhatsKeep monitors your Downloads folder, reads the local WhatsApp Desktop datab
 
 ```
 ~/WhatsKeep/
-├── Contacts/
-│   ├── John Smith (+1 555 123-4567)/
-│   │   ├── Audio/
-│   │   ├── Image/
-│   │   ├── Video/
-│   │   └── _evidence/
-│   └── Sarah Connor (+1 555 987-6543)/
-│       ├── Image/
-│       └── Video/
-├── Groups/
-│   ├── Weekend Crew/
-│   │   ├── Audio/
-│   │   │   ├── [David (+1 555 222-3333)] WhatsApp Audio 2026-04-08 at 14.20.43.opus
-│   │   │   └── [Emma] WhatsApp Audio 2026-04-08 at 15.30.00.opus
-│   │   └── Image/
-│   └── Family Group/
-│       ├── Image/
-│       └── Video/
-├── _Unidentified/
-│   └── Image/
-│       └── 2026-04/
-│           └── WhatsApp Image 2026-04-05 at 08.00.00.jpeg
-├── _Chat Exports/
-│   └── Family Group/
-│       └── WhatsApp Chat - Family Group.zip
-└── _Evidence/
-    └── full_export_2026-04-14_120000/
-        ├── manifest.json
-        ├── SHA256SUMS.txt
-        └── chain_of_custody.json
+└── WhatsApp (Your Name +1 555 000-0000)/
+    ├── Contacts/
+    │   ├── John Smith (+1 555 123-4567)/
+    │   │   ├── Audio/
+    │   │   ├── Image/
+    │   │   ├── Video/
+    │   │   └── _evidence/
+    │   └── Sarah Connor (+1 555 987-6543)/
+    │       ├── Image/
+    │       └── Video/
+    ├── Groups/
+    │   ├── Weekend Crew/
+    │   │   ├── Audio/
+    │   │   │   ├── [David (+1 555 222-3333)] WhatsApp Audio 2026-04-08 at 14.20.43.opus
+    │   │   │   └── [Emma] WhatsApp Audio 2026-04-08 at 15.30.00.opus
+    │   │   └── Image/
+    │   └── Family Group/
+    │       ├── Image/
+    │       └── Video/
+    ├── _Unidentified/
+    │   └── Image/
+    │       └── 2026-04/
+    │           └── WhatsApp Image 2026-04-05 at 08.00.00.jpeg
+    ├── _Chat Exports/
+    │   └── Family Group/
+    │       └── WhatsApp Chat - Family Group.zip
+    └── _Evidence/
+        └── full_export_2026-04-14_120000/
+            ├── manifest.json
+            ├── SHA256SUMS.txt
+            └── chain_of_custody.json
 ```
+
+The top-level account folder (`WhatsApp (Your Name +phone)`) is created automatically from your WhatsApp profile. If you have multiple WhatsApp accounts linked, each gets its own folder.
 
 Each file is attributed to the person or group that sent it. In group chats, the sender's name is prefixed to the filename. Unidentified files go to `_Unidentified/`, organized by date.
 
@@ -161,7 +164,23 @@ Two-step hash verification before removing duplicates:
 - Audit log of each duplicate removed
 - Supports SHA-256 and BLAKE2b algorithms
 
-### 10. Cross-platform daemon
+### 10. System tray application
+
+Run WhatsKeep as a system tray app with `whatskeep tray` — no terminal window needed. The tray icon provides quick access to:
+
+- **Run Now** — organize files on demand
+- **Export All Media** — full history export
+- **Start Real-time Watcher** — background monitoring (auto-starts on launch)
+- **Open WhatsKeep Folder** — jump to your organized media
+- **Show Stats** / **Check for Updates**
+
+Standalone binaries (built with PyInstaller) launch the tray app directly when double-clicked on macOS and Windows.
+
+### 11. Multi-account support
+
+WhatsKeep automatically detects all WhatsApp accounts linked on your machine. Each account gets its own folder under the backup directory, named after the account's profile name and phone number (e.g., `WhatsApp (Your Name +1 555 000-0000)/`).
+
+### 12. Cross-platform daemon
 
 - **macOS**: launchd (with auto-restart)
 - **Windows**: Task Scheduler
@@ -169,7 +188,7 @@ Two-step hash verification before removing duplicates:
 
 Install, start, stop, and remove via simple commands (`whatskeep start`, `whatskeep stop`, `whatskeep uninstall`).
 
-### 11. Media type filtering
+### 13. Media type filtering
 
 Granular configuration of which types to process:
 
@@ -183,7 +202,7 @@ Granular configuration of which types to process:
 | `gif` | Disabled |
 | `voice_note` | Enabled |
 
-### 12. Selective backup
+### 14. Selective backup
 
 Three backup modes:
 
@@ -191,11 +210,11 @@ Three backup modes:
 - **`allowlist`** -- organizes only listed contacts
 - **`blocklist`** -- organizes all contacts except those listed
 
-### 13. Dry-run
+### 15. Dry-run
 
 Run `whatskeep run --dry-run` or `whatskeep export --dry-run` to preview exactly what would be done without moving or copying any files.
 
-### 14. Doctor
+### 16. Doctor
 
 Comprehensive environment diagnostics:
 
@@ -207,11 +226,11 @@ Comprehensive environment diagnostics:
 - Configuration validity
 - Disk space (> 1 GB free)
 
-### 15. Auto-update
+### 17. Auto-update
 
 Checks for updates via the GitHub Releases API. Can be configured to check automatically every N hours or manually via `whatskeep update`.
 
-### 16. 100% local and private
+### 18. 100% local and private
 
 - Reads the WhatsApp database in **read-only mode** (never writes)
 - Accesses only media metadata: filename, timestamp, contact name, phone number
@@ -283,9 +302,26 @@ cd whatskeep
 pip install -e .        # or: uv pip install -e .
 ```
 
-### Standalone binary (planned)
+### Standalone binary (no Python required)
 
-Distribution as a single executable (no Python required) is planned for a future release.
+Pre-built executables for macOS (Apple Silicon and Intel), Windows, and Linux are available on the [GitHub Releases](https://github.com/alissonlinneker/whatskeep/releases) page. Download the binary for your platform, make it executable, and run:
+
+```bash
+# macOS (Apple Silicon)
+chmod +x whatskeep-macos-arm64
+./whatskeep-macos-arm64 version
+
+# macOS (Intel)
+chmod +x whatskeep-macos-x86_64
+./whatskeep-macos-x86_64 version
+
+# Linux
+chmod +x whatskeep-linux-x86_64
+./whatskeep-linux-x86_64 version
+
+# Windows — just double-click or run:
+whatskeep-windows-x86_64.exe version
+```
 
 ---
 
@@ -359,13 +395,14 @@ Done. WhatsKeep now automatically organizes every new WhatsApp media file as soo
 | `whatskeep export` | Export the ENTIRE media history from WhatsApp internal storage |
 | `whatskeep export --dry-run` | Preview the export without copying any files |
 
-### Daemon
+### Daemon & Tray
 
 | Command | Description |
 |---------|-------------|
 | `whatskeep start` | Install and start the background daemon |
 | `whatskeep stop` | Stop the daemon |
 | `whatskeep status` | Show daemon status and last execution |
+| `whatskeep tray` | Launch WhatsKeep as a system tray application (no terminal needed) |
 
 ### Information
 
@@ -603,7 +640,15 @@ Your media stays on your machine. Always.
 
 ## Roadmap
 
-### v1.0.0 (Current)
+### v1.1.1 (Current)
+
+- Everything from v1.0.0 plus:
+- System tray application (`whatskeep tray`) — no terminal needed
+- Multi-account support (automatic detection of all linked WhatsApp accounts)
+- Standalone binaries for macOS (ARM + Intel), Windows, and Linux via PyInstaller
+- Native desktop notifications (macOS, Windows, Linux)
+
+### v1.0.0
 
 - Cross-platform file detection (macOS, Windows, Linux)
 - Modern and legacy WhatsApp filename pattern recognition
@@ -632,19 +677,18 @@ Your media stays on your machine. Always.
 - Evidence package export for legal use
 - Name resolution via WhatsApp push name
 
-### v1.1.0 (Planned)
+### v1.2.0 (Planned)
 
 Focus: **Evidence strength and reliability improvements**.
 
 - OpenTimestamps integration (blockchain timestamp anchoring — evidence Layer 2)
 - Configurable timestamp matching tolerance
-- Native desktop notification system
 - Progress bar for large batch operations
 - Re-correlate unidentified files on subsequent runs
 - Expanded test coverage (target >80%)
 - Homebrew formula, winget manifest, snap package
 
-### v1.2.0 (Planned)
+### v1.3.0 (Planned)
 
 Focus: **Smart organization and user experience**.
 
@@ -657,7 +701,7 @@ Focus: **Smart organization and user experience**.
 - Shell completions (bash, zsh, fish, PowerShell)
 - Localization support (Portuguese, Spanish)
 
-### v1.3.0 (Planned)
+### v1.4.0 (Planned)
 
 Focus: **Advanced backup features**.
 
@@ -679,7 +723,6 @@ Focus: **Multi-device and ecosystem expansion**.
 - Web dashboard for browsing organized media
 - iCloud/Google Drive/OneDrive integration
 - Mobile companion app
-- Multiple WhatsApp account support
 - End-to-end encrypted backup
 - REST API for integration with other tools
 

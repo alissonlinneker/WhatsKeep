@@ -149,3 +149,13 @@ jobs:
             # Windows — just double-click or run:
             whatskeep-windows-x86_64.exe version
             ```
+
+      - name: Update PyPI badge cache buster in README
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s|pypi/v/whatskeep?v=[^\"]*|pypi/v/whatskeep?v=${VERSION}|" README.md
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update PyPI badge to v${VERSION}"
+          git push origin HEAD:main

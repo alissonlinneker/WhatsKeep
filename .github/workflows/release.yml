@@ -40,36 +40,39 @@ jobs:
           fi
         shell: bash
 
-      - name: Build standalone binary
+      - name: Common PyInstaller flags
+        id: common
+        run: |
+          echo "flags=--collect-all whatskeep --add-data assets:assets --hidden-import whatskeep.db.macos --hidden-import whatskeep.db.windows --hidden-import whatskeep.db.linux --hidden-import whatskeep.platform.macos --hidden-import whatskeep.platform.windows --hidden-import whatskeep.platform.linux --hidden-import whatskeep.tray --hidden-import pystray --hidden-import PIL --hidden-import PIL._tkinter_finder --hidden-import shellingham --hidden-import shellingham.posix --hidden-import shellingham.nt" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Build GUI binary (tray app, no console)
+        run: |
+          pyinstaller \
+            --onefile --windowed \
+            --name whatskeep-${{ matrix.target }} \
+            ${{ steps.icon.outputs.flag }} \
+            ${{ steps.common.outputs.flags }} \
+            src/whatskeep/gui.py
+        shell: bash
+
+      - name: Build CLI binary (terminal)
         run: |
           pyinstaller \
             --onefile \
-            --name whatskeep-${{ matrix.target }} \
+            --name whatskeep-cli-${{ matrix.target }} \
             ${{ steps.icon.outputs.flag }} \
-            --collect-all whatskeep \
-            --add-data "assets:assets" \
-            --hidden-import whatskeep.db.macos \
-            --hidden-import whatskeep.db.windows \
-            --hidden-import whatskeep.db.linux \
-            --hidden-import whatskeep.platform.macos \
-            --hidden-import whatskeep.platform.windows \
-            --hidden-import whatskeep.platform.linux \
-            --hidden-import whatskeep.tray \
-            --hidden-import pystray \
-            --hidden-import PIL \
-            --hidden-import shellingham \
-            --hidden-import shellingham.posix \
-            --hidden-import shellingham.nt \
+            ${{ steps.common.outputs.flags }} \
             src/whatskeep/__main__.py
         shell: bash
 
-      - name: Test binary runs
-        run: ./dist/whatskeep-${{ matrix.target }} version
+      - name: Test CLI binary
+        run: ./dist/whatskeep-cli-${{ matrix.target }} version
         shell: bash
         if: runner.os != 'Windows'
 
-      - name: Test binary runs (Windows)
-        run: dist\whatskeep-${{ matrix.target }}.exe version
+      - name: Test CLI binary (Windows)
+        run: dist\whatskeep-cli-${{ matrix.target }}.exe version
         shell: cmd
         if: runner.os == 'Windows'
 

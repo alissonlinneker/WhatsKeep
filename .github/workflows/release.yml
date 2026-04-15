@@ -132,10 +132,14 @@ jobs:
           path: artifacts/
           merge-multiple: true
 
-      - name: Create checksums
+      - name: Flatten macOS .app bundles and create checksums
         run: |
           cd artifacts
-          ls -la whatskeep-* 2>/dev/null
+          # macOS --windowed creates .app dirs; zip them for distribution
+          for app in *.app; do
+            [ -d "$app" ] && zip -r "${app%.app}.zip" "$app" && rm -r "$app"
+          done
+          ls -la whatskeep-*
           sha256sum whatskeep-* > SHA256SUMS.txt
           echo "Checksums:"
           cat SHA256SUMS.txt

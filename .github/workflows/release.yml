@@ -40,34 +40,50 @@ jobs:
           fi
         shell: bash
 
-      - name: Common PyInstaller flags
-        id: common
+      - name: Set add-data separator
+        id: sep
         run: |
           if [[ "${{ runner.os }}" == "Windows" ]]; then
-            SEP=";"
+            echo "adddata=assets;assets" >> $GITHUB_OUTPUT
           else
-            SEP=":"
+            echo "adddata=assets:assets" >> $GITHUB_OUTPUT
           fi
-          echo "flags=--collect-all whatskeep --add-data assets${SEP}assets --hidden-import whatskeep.db.macos --hidden-import whatskeep.db.windows --hidden-import whatskeep.db.linux --hidden-import whatskeep.platform.macos --hidden-import whatskeep.platform.windows --hidden-import whatskeep.platform.linux --hidden-import whatskeep.tray --hidden-import pystray --hidden-import PIL --hidden-import PIL._tkinter_finder --hidden-import shellingham --hidden-import shellingham.posix --hidden-import shellingham.nt" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Build GUI binary (tray app, no console)
         run: |
-          pyinstaller \
-            --onefile --windowed \
+          pyinstaller --onefile --windowed \
             --name whatskeep-${{ matrix.target }} \
             ${{ steps.icon.outputs.flag }} \
-            ${{ steps.common.outputs.flags }} \
+            --collect-all whatskeep \
+            "--add-data=${{ steps.sep.outputs.adddata }}" \
+            --hidden-import whatskeep.db.macos \
+            --hidden-import whatskeep.db.windows \
+            --hidden-import whatskeep.db.linux \
+            --hidden-import whatskeep.platform.macos \
+            --hidden-import whatskeep.platform.windows \
+            --hidden-import whatskeep.platform.linux \
+            --hidden-import whatskeep.tray \
+            --hidden-import pystray \
+            --hidden-import PIL \
+            --hidden-import shellingham \
             src/whatskeep/gui.py
         shell: bash
 
       - name: Build CLI binary (terminal)
         run: |
-          pyinstaller \
-            --onefile \
+          pyinstaller --onefile \
             --name whatskeep-cli-${{ matrix.target }} \
             ${{ steps.icon.outputs.flag }} \
-            ${{ steps.common.outputs.flags }} \
+            --collect-all whatskeep \
+            "--add-data=${{ steps.sep.outputs.adddata }}" \
+            --hidden-import whatskeep.db.macos \
+            --hidden-import whatskeep.db.windows \
+            --hidden-import whatskeep.db.linux \
+            --hidden-import whatskeep.platform.macos \
+            --hidden-import whatskeep.platform.windows \
+            --hidden-import whatskeep.platform.linux \
+            --hidden-import shellingham \
             src/whatskeep/__main__.py
         shell: bash
 

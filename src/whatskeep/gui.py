@@ -38,7 +38,7 @@ def main() -> None:
         if platform.system() == "Windows":
             import ctypes
 
-            ctypes.windll.user32.MessageBoxW(  # type: ignore[union-attr]
+            ctypes.windll.user32.MessageBoxW(  # type: ignore[attr-defined]
                 0,
                 f"WhatsKeep failed to start:\n\n{exc}",
                 "WhatsKeep Error",

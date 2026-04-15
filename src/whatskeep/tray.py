@@ -16,11 +16,14 @@ def _get_icon_image():
     from PIL import Image
 
     # Try bundled asset first (PyInstaller), then source tree
-    candidates = [
-        Path(getattr(sys, "_MEIPASS", "")) / "assets" / "icon-64.png",
+    candidates: list[Path] = []
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        candidates.append(Path(meipass) / "assets" / "icon-64.png")
+    candidates.extend([
         Path(__file__).parent.parent.parent / "assets" / "icon-64.png",
         Path(__file__).parent.parent.parent / "docs" / "icon.svg",
-    ]
+    ])
     for p in candidates:
         if p.exists():
             return Image.open(p)
@@ -142,6 +145,9 @@ def _check_update():
 
 def _notify(title: str, message: str) -> None:
     """Show a desktop notification."""
+    # Sanitize for shell/XML injection
+    title = title.replace('"', "'").replace("<", "").replace(">", "").replace("&", "and")
+    message = message.replace('"', "'").replace("<", "").replace(">", "").replace("&", "and")
     system = platform.system()
     try:
         if system == "Darwin":
@@ -186,7 +192,7 @@ def run_tray() -> None:
     import pystray
 
     icon_image = _get_icon_image()
-    watcher_running = False
+    watcher_event = threading.Event()
 
     def on_run_now(icon, item):
         _notify("WhatsKeep", "Organizing files...")
@@ -197,10 +203,9 @@ def run_tray() -> None:
         _run_export()
 
     def on_start_watcher(icon, item):
-        nonlocal watcher_running
-        if not watcher_running:
+        if not watcher_event.is_set():
             _start_watcher()
-            watcher_running = True
+            watcher_event.set()
             _notify("WhatsKeep", "Real-time watcher started")
         else:
             _notify("WhatsKeep", "Watcher is already running")
@@ -238,8 +243,7 @@ def run_tray() -> None:
 
         time.sleep(2)
         _start_watcher()
-        nonlocal watcher_running
-        watcher_running = True
+        watcher_event.set()
 
     threading.Thread(target=_auto_start, daemon=True).start()
 

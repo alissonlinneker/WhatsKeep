@@ -248,21 +248,28 @@ class CustodyManager:
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H%M%S")
 
         if contact_name and output_dir is None:
-            # Find the contact's folder (search Contacts/ then Groups/)
+            # Find the contact's folder — search inside account folders and root
             safe = _safe_name(contact_name)
-            for category in ("Contacts", "Groups"):
-                cat_dir = self._backup_dir / category
-                if not cat_dir.is_dir():
-                    continue
-                for d in cat_dir.iterdir():
-                    if d.is_dir() and (d.name == contact_name or safe in d.name):
-                        pkg_dir = d / "_evidence" / timestamp
+            pkg_dir = None
+            # Search inside account folders and root level
+            search_roots = [self._backup_dir]
+            for d in self._backup_dir.iterdir():
+                if d.is_dir() and d.name not in ("_Evidence", "_Unidentified"):
+                    search_roots.append(d)
+            for root in search_roots:
+                for category in ("Contacts", "Groups"):
+                    cat_dir = root / category
+                    if not cat_dir.is_dir():
+                        continue
+                    for d in cat_dir.iterdir():
+                        if d.is_dir() and (d.name == contact_name or safe in d.name):
+                            pkg_dir = d / "_evidence" / timestamp
+                            break
+                    if pkg_dir:
                         break
-                else:
-                    continue
-                break
-            else:
-                # Fallback: global evidence
+                if pkg_dir:
+                    break
+            if not pkg_dir:
                 pkg_dir = self._backup_dir / _EVIDENCE_DIR / _safe_name(contact_name) / timestamp
         elif output_dir:
             pkg_dir = output_dir / f"export_{timestamp}"

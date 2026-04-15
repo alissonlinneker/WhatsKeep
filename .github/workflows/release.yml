@@ -43,7 +43,12 @@ jobs:
       - name: Common PyInstaller flags
         id: common
         run: |
-          echo "flags=--collect-all whatskeep --add-data assets:assets --hidden-import whatskeep.db.macos --hidden-import whatskeep.db.windows --hidden-import whatskeep.db.linux --hidden-import whatskeep.platform.macos --hidden-import whatskeep.platform.windows --hidden-import whatskeep.platform.linux --hidden-import whatskeep.tray --hidden-import pystray --hidden-import PIL --hidden-import PIL._tkinter_finder --hidden-import shellingham --hidden-import shellingham.posix --hidden-import shellingham.nt" >> $GITHUB_OUTPUT
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            SEP=";"
+          else
+            SEP=":"
+          fi
+          echo "flags=--collect-all whatskeep --add-data assets${SEP}assets --hidden-import whatskeep.db.macos --hidden-import whatskeep.db.windows --hidden-import whatskeep.db.linux --hidden-import whatskeep.platform.macos --hidden-import whatskeep.platform.windows --hidden-import whatskeep.platform.linux --hidden-import whatskeep.tray --hidden-import pystray --hidden-import PIL --hidden-import PIL._tkinter_finder --hidden-import shellingham --hidden-import shellingham.posix --hidden-import shellingham.nt" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Build GUI binary (tray app, no console)

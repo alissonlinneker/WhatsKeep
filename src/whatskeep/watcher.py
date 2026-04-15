@@ -58,6 +58,7 @@ class RealtimeHandler(FileSystemEventHandler):
         self._processing: set[str] = set()
         self._lock = threading.Lock()
         self._db_reader: object | None = None  # Set by watch() after DB loads
+        self._account_folder: str = ""  # Set after DB loads
 
     def update_lookup(self, lookup: dict) -> None:
         """Refresh the DB lookup cache."""
@@ -222,7 +223,12 @@ class RealtimeHandler(FileSystemEventHandler):
                 group_suffix="",
             )
             type_folder = parsed.media_type.capitalize()
-            dest_dir = self._backup_dir / category / folder / type_folder
+            root = (
+                self._backup_dir / self._account_folder
+                if self._account_folder
+                else self._backup_dir
+            )
+            dest_dir = root / category / folder / type_folder
 
             # Prefix sender for group messages
             if contact.is_group and contact.sender_name:
@@ -232,13 +238,18 @@ class RealtimeHandler(FileSystemEventHandler):
                 else:
                     result_filename = f"[{safe_sender}] {filename}"
         else:
+            root = (
+                self._backup_dir / self._account_folder
+                if self._account_folder
+                else self._backup_dir
+            )
             unid = self._org_config.get("unidentified_folder", "_Unidentified")
             type_folder = parsed.media_type.capitalize()
             if self._org_config.get("unidentified_by_date", True):
                 date = parsed.timestamp.strftime("%Y-%m")
-                dest_dir = self._backup_dir / unid / type_folder / date
+                dest_dir = root / unid / type_folder / date
             else:
-                dest_dir = self._backup_dir / unid / type_folder
+                dest_dir = root / unid / type_folder
 
         return dest_dir / result_filename
 
@@ -251,7 +262,10 @@ def _load_db_lookup(handler: RealtimeHandler) -> None:
             lookup = db_reader.build_lookup()
             handler.update_lookup(lookup)
             handler._db_reader = db_reader  # Keep reference for refresh
-            logger.info(f"DB lookup ready: {len(lookup)} entries")
+            # Set account folder for path consistency with organizer
+            name, phone = db_reader.account_info()
+            handler._account_folder = sanitize_dirname(f"{name} ({phone})")
+            logger.info(f"DB lookup ready: {len(lookup)} entries (account: {name})")
         else:
             logger.warning("WhatsApp DB not available — files go to _Unidentified")
     except Exception as exc:

@@ -58,22 +58,22 @@ def calculate_stats(backup_dir: Path) -> StorageStats:
         except ValueError:
             parts = ()
 
-        # Account for Contacts/Groups prefix in path hierarchy
-        # New structure: Contacts/<name>/<type>/file or Groups/<name>/<type>/file
-        # Legacy structure: <name>/<type>/file
+        # Path hierarchy varies:
+        # Account structure: <account>/Contacts/<name>/<type>/file
+        # Flat structure:    Contacts/<name>/<type>/file
+        # Legacy:            <name>/<type>/file
         categories = {"Contacts", "Groups"}
-        if parts and parts[0] in categories:
-            contact = parts[1] if len(parts) >= 3 else "_root"
-            media_type = (
-                parts[2] if len(parts) >= 4
-                else item.suffix.lstrip(".").lower() or "_unknown"
-            )
-        else:
-            contact = parts[0] if len(parts) >= 2 else "_root"
-            media_type = (
-                parts[1] if len(parts) >= 3
-                else item.suffix.lstrip(".").lower() or "_unknown"
-            )
+        p = list(parts)
+        # Skip account folder if present (first level not in categories and not _)
+        if p and p[0] not in categories and not p[0].startswith("_"):
+            p = p[1:]
+        # Skip Contacts/Groups category
+        if p and p[0] in categories:
+            p = p[1:]
+
+        contact = p[0] if len(p) >= 2 else "_root"
+        ext_fallback = item.suffix.lstrip(".").lower() or "_unknown"
+        media_type = p[1] if len(p) >= 3 else ext_fallback
 
         stats.by_contact[contact] = stats.by_contact.get(contact, 0) + size
         stats.by_type[media_type] = stats.by_type.get(media_type, 0) + size

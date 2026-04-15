@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/whatskeep/"><img src="https://img.shields.io/pypi/v/whatskeep" alt="PyPI"></a>
+  <a href="https://pypi.org/project/whatskeep/"><img src="https://img.shields.io/pypi/v/whatskeep?v=1.1.0" alt="PyPI"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT"></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python"></a>
   <a href="https://github.com/alissonlinneker/whatskeep"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="Platform"></a>
